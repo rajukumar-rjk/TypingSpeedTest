@@ -8,33 +8,37 @@ quotes = [
 ];
 const timerEl = document.getElementById("timer");
 const sampleTextEl = document.querySelector(".sample-text");
+const wpmEl = document.getElementById("wpm-div");
+const cpmEl = document.getElementById("cpm-div");
+const wpmCountEl = document.getElementById("wpm-count");
+const cpmCountEl = document.getElementById("cpm-count");
 sampleTextEl.innerHTML =
   "Click on the area below to start the Typing speed test";
-const typedTextEl = document.querySelector(".input-text");
-let timeLimit = 5;
+let typedTextEl = document.querySelector(".input-text");
+let errorEl = document.getElementById("error-count");
+let accuracyEl = document.getElementById("accuracy-count");
+let timeLimit = 60;
 let totalTime = timeLimit;
 let timeLeft = totalTime;
 let timeConsumed = 0;
 let timer = 0;
-
+let total;
 let sampleTextNo = 0;
+let selectedTextCharArr;
 let totalSampleTextChar = 0;
+let totalErrors = 0;
+let totalTypedChar = 0;
+let typedChar = 0;
 
-const resetTest = () => {
-  totalTime = timeLimit;
-  timeLeft = totalTime;
-  timeConsumed = 0;
-  timer = 0;
-};
-
-const startTest = () => {
+let startTest = () => {
+  getSampleText();
   clearInterval(timer);
   timer = setInterval(startTimer, 1000);
 };
 
-const startTimer = () => {
+// start the timer
+let startTimer = () => {
   if (timeLeft > 0) {
-    console.log(timeLeft);
     timeLeft--;
     timeConsumed++;
     timerEl.innerText = timeLeft;
@@ -43,26 +47,76 @@ const startTimer = () => {
   }
 };
 
-const endTest = () => {
-  console.log("end");
+// end the test
+let endTest = () => {
   clearInterval(timer);
-};
+  typedTextEl.disabled = true;
 
-const getSampleText = (sampleTextNo) => {
+  sampleTextEl.textContent = "Refresh the page to restart the test again";
+  cpm = Math.round((totalTypedChar / timeConsumed) * 60);
+  wpm = Math.round((totalTypedChar / 5 / timeConsumed) * 60);
+  wpmCountEl.textContent = wpm;
+  cpmCountEl.textContent = cpm;
+  wpmEl.style.display = "block";
+  cpmEl.style.display = "block";
+};
+// getting tex to display on for typing
+const getSampleText = () => {
+  console.log(`start at ${sampleTextNo}`);
   totalSampleTextChar = 0;
-  let st = quotes[sampleTextIndexNo];
-  totalSampleTextChar = st.split("").length;
+  sampleTextEl.textContent = null;
+
+  let st = quotes[sampleTextNo];
+  selectedTextCharArr = st.split("");
+
+  totalSampleTextChar = selectedTextCharArr.length;
   sampleTextNo++;
-  sampleTextEl.
+
+  selectedTextCharArr.forEach((char) => {
+    const charSpan = document.createElement("span");
+    charSpan.innerText = char;
+    sampleTextEl.appendChild(charSpan);
+  });
 };
 
-const testProcess = () => {
+// on every input in the input box this code will run
+let testProcess = () => {
+  typedChar++;
   let EnteredText = typedTextEl.value;
-  let totalEnteredChar = EnteredText.split("").length;
+  let EnteredTextArr = EnteredText.split("");
+  let totalEnteredChar = EnteredTextArr.length;
+
+  errors = 0;
+
+  // checking errors
+  quoteSpanArray = sampleTextEl.querySelectorAll("span");
+  quoteSpanArray.forEach((char, index) => {
+    let typedChar = EnteredTextArr[index];
+
+    if (typedChar == null) {
+      char.classList.remove("correct_char");
+      char.classList.remove("incorrect_char");
+    } else if (typedChar === char.innerText) {
+      char.classList.add("correct_char");
+      char.classList.remove("incorrect_char");
+    } else {
+      char.classList.add("incorrect_char");
+      char.classList.remove("correct_char");
+
+      errors++;
+    }
+  });
+  // counting errors and accuracy
+  errorEl.textContent = totalErrors + errors;
+  let correctChar = totalTypedChar - (totalErrors + errors);
+  let accuracy = (correctChar / totalTypedChar) * 100;
+  accuracyEl.textContent = Math.round(accuracy);
 
   if (totalEnteredChar === totalSampleTextChar) {
+    typedTextEl.value = "";
+    totalErrors += errors;
     getSampleText();
   }
-};
 
-getSampleText(1);
+  totalTypedChar++;
+};

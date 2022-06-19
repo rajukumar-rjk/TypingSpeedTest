@@ -8,11 +8,11 @@
     <div class="container">
       <h1>Test your typing speed</h1>
       <div class="card-container">
-        <div class="card-item">
+        <div class="card-item" id="wpm-div" style="display: none">
           WPM
           <div class="card-text" id="wpm-count">0</div>
         </div>
-        <div class="card-item">
+        <div class="card-item" id="cpm-div" style="display: none">
           CPM
           <div class="card-text" id="cpm-count">0</div>
         </div>
@@ -34,6 +34,7 @@
         class="input-text"
         placeholder="start typing here..."
         onfocus="startTest()"
+        oninput="testProcess()"
       ></textarea>
     </div>
     <script src="index.js"></script>
