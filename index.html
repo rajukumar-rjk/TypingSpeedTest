@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Test your typing speed</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Test your typing speed</h1>
+      <div class="card-container">
+        <div class="card-item">
+          WPM
+          <div class="card-text" id="wpm-count">0</div>
+        </div>
+        <div class="card-item">
+          CPM
+          <div class="card-text" id="cpm-count">0</div>
+        </div>
+        <div class="card-item">
+          ERRORS
+          <div class="card-text" id="error-count">0</div>
+        </div>
+        <div class="card-item" id="time-count">
+          TIME
+          <div class="card-text" id="timer">0</div>
+        </div>
+        <div class="card-item" id="accuracy">
+          ACCURACY
+          <div class="card-text" id="accuracy-count">0</div>
+        </div>
+      </div>
+      <div class="sample-text"></div>
+      <textarea
+        class="input-text"
+        placeholder="start typing here..."
+        onfocus="startTest()"
+      ></textarea>
+    </div>
+    <script src="index.js"></script>
+  </body>
+</html>
